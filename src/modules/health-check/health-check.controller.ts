@@ -7,6 +7,6 @@ export class HealthCheckController {
 
   @Get()
   getHello(): string {
-    return "health check";
+    return "health-check";
   }
 }
