@@ -1,0 +1,20 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0.25
+    platform: linux/x86_64
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql_mode="" --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: default
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 1
+      LANG: C.UTF-8
+    ports:
+      - 13306:3306
+
+  redis:
+    image: 'redis:6-alpine'
+    platform: linux/x86_64
+    ports:
+      - 16379:6379
