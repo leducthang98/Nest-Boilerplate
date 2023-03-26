@@ -1,6 +1,4 @@
 import {
-  HttpStatus,
-  UnprocessableEntityException,
   ValidationPipe,
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -34,7 +32,7 @@ async function bootstrap() {
   initSwagger(app, appName);
 
   await app.listen(port, () => {
-    console.info(`start server at ${port}`);
+    console.info(`🚀 server start at ${port}!`);
   });
 }
 bootstrap();

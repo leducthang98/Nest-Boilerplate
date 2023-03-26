@@ -3,6 +3,7 @@
 ## require:
 - docker
 - nodejs >=16.0.0
+- yarn >=1.22.0
 
 ### copy .env
 ```
@@ -16,20 +17,20 @@ docker-compose up -d
 
 ### migrate database:
 ```
-npm run typeorm:migrate
+yarn typeorm:migrate
 ```
 
 ### start dev:
 ```
-npm install
-npm run start:dev
+yarn install
+yarn start:dev
 ```
 
 ### start prod:
 ```
-npm install
-npm run build
-npm run start:prod
+yarn install
+yarn build
+yarn start:prod
 ```
 
 ### generate new modules:
