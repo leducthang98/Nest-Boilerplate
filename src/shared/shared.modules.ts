@@ -11,4 +11,4 @@ const providers = [ApiConfigService, DatabaseUtilService];
   imports: [HttpModule],
   exports: [...providers, HttpModule],
 })
-export class SharedModule { }
+export class SharedModule {}

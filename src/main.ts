@@ -1,4 +1,8 @@
-import { HttpStatus, UnprocessableEntityException, ValidationPipe } from '@nestjs/common';
+import {
+  HttpStatus,
+  UnprocessableEntityException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { initSwagger } from './configs/swagger.config';
@@ -19,12 +23,13 @@ async function bootstrap() {
 
   app.setGlobalPrefix(`api`);
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    transform: true
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
   app.enableShutdownHooks();
-
 
   initSwagger(app, appName);
 

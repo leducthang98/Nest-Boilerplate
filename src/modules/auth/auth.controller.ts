@@ -5,15 +5,17 @@ import { LoginResponseDto } from './dto/login-response.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  async login(@Body() loginRequestDto: LoginRequestDto): Promise<LoginResponseDto> {
-    const users = await this.authService.login()
-    console.log(users)
+  async login(
+    @Body() loginRequestDto: LoginRequestDto,
+  ): Promise<LoginResponseDto> {
+    const users = await this.authService.login();
+    console.log(users);
     return {
       accessToken: '',
-      refreshToken: ''
-    }
+      refreshToken: '',
+    };
   }
 }

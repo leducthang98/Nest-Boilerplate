@@ -16,12 +16,12 @@ import { AuthModule } from './modules/auth/auth.module';
       imports: [SharedModule],
       inject: [ApiConfigService],
       useFactory: (configService: ApiConfigService) => {
-        return configService.mysqlConfig()
-      }
+        return configService.mysqlConfig();
+      },
     }),
     SharedModule,
     HealthCheckModule,
-    AuthModule
+    AuthModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}
