@@ -36,4 +36,5 @@ yarn start:prod
 ### generate new modules:
 ```
 nest g res ${module-name} modules
+// NOTE: remember to import typeorm entities
 ```
