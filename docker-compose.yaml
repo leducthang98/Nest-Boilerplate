@@ -11,10 +11,10 @@ services:
       MYSQL_PASSWORD: 1
       LANG: C.UTF-8
     ports:
-      - 13306:3306
+      - 3316:3306
 
   redis:
     image: 'redis:6-alpine'
     platform: linux/x86_64
     ports:
-      - 16379:6379
+      - 6389:6379
