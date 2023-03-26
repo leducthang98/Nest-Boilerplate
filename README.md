@@ -14,7 +14,7 @@ cp .env.example .env
 docker-compose up -d
 ```
 
-### migrate database
+### migrate database:
 ```
 npm run typeorm:migrate
 ```
@@ -30,4 +30,9 @@ npm run start:dev
 npm install
 npm run build
 npm run start:prod
+```
+
+### generate new modules:
+```
+nest g res ${module-name} modules
 ```

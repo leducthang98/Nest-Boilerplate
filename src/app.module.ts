@@ -4,8 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthCheckModule } from './modules/health-check/health-check.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.modules';
-
-const modules = [HealthCheckModule, SharedModule]
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -17,11 +16,12 @@ const modules = [HealthCheckModule, SharedModule]
       imports: [SharedModule],
       inject: [ApiConfigService],
       useFactory: (configService: ApiConfigService) => {
-        console.log(configService.mysqlConfig())
         return configService.mysqlConfig()
       }
     }),
-    ...modules
+    SharedModule,
+    HealthCheckModule,
+    AuthModule
   ],
 })
 export class AppModule { }

@@ -1,8 +1,9 @@
 import { HttpModule } from '@nestjs/axios';
 import { Global, Module } from '@nestjs/common';
 import { ApiConfigService } from './services/api-config.service';
+import { DatabaseUtilService } from './services/database-util.service';
 
-const providers = [ApiConfigService];
+const providers = [ApiConfigService, DatabaseUtilService];
 
 @Global()
 @Module({
@@ -10,4 +11,4 @@ const providers = [ApiConfigService];
   imports: [HttpModule],
   exports: [...providers, HttpModule],
 })
-export class SharedModule {}
+export class SharedModule { }
