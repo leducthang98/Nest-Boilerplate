@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "engines": {
     "node": ">=16.0.0",
-    "yarn":">=1.22.0"
+    "yarn": ">=1.22.0"
   },
   "description": "",
   "author": "Thomas Le",
@@ -31,7 +31,9 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.0.0",
+    "@nestjs/jwt": "^10.0.2",
     "@nestjs/mapped-types": "*",
+    "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.2.1",
     "@nestjs/typeorm": "^9.0.1",
@@ -41,6 +43,9 @@
     "dotenv": "^16.0.3",
     "lodash": "^4.17.21",
     "mysql2": "^3.2.0",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.12"
@@ -53,6 +58,8 @@
     "@types/jest": "29.2.4",
     "@types/lodash": "^4.14.191",
     "@types/node": "18.11.18",
+    "@types/passport-jwt": "^3.0.8",
+    "@types/passport-local": "^1.0.35",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",

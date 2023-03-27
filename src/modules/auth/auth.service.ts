@@ -1,41 +1,59 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import {
   InjectDataSource,
-  InjectEntityManager,
   InjectRepository,
 } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { DatabaseUtilService } from 'src/shared/services/database-util.service';
 import {
   DataSource,
-  EntityManager,
-  Like,
-  QueryRunner,
   Repository,
 } from 'typeorm';
-
+import { JwtPayload } from './dto/jwt-payload.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly jwtService: JwtService,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @InjectDataSource()
     private readonly dataSource: DataSource,
     private readonly databaseUtilService: DatabaseUtilService,
-  ) {}
+  ) { }
 
-  async login() {
-    const users = this.databaseUtilService.executeTransaction(
-      this.dataSource,
-      async (queryRunner: QueryRunner) => {
-        return await queryRunner.manager.find(UserEntity, {
-          where: {
-            username: Like('%thang%'),
-          },
-        });
-      },
-    );
+  async validateUser(username: string, password: string): Promise<UserEntity> {
+    const user: UserEntity = await this.userRepository.findOne({
+      where: {
+        username
+      }
+    })
 
-    return users;
+    if (user && user.password === password) {
+      return user
+    }
+
+    return null
   }
+
+  async generateAccessToken(payload: JwtPayload): Promise<string> {
+    return this.jwtService.sign(payload)
+  }
+
+  async login(user: UserEntity): Promise<LoginResponseDto> {
+    const payload: JwtPayload = {
+      userId: user.id,
+      role: 'ADMIN'
+    }
+    
+    const accessToken = await this.generateAccessToken(payload)
+
+    return {
+      accessToken,
+      refreshToken: ''
+    }
+  }
+
+
 }
