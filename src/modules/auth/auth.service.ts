@@ -1,59 +1,79 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import {
-  InjectDataSource,
-  InjectRepository,
-} from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { DatabaseUtilService } from 'src/shared/services/database-util.service';
-import {
-  DataSource,
-  Repository,
-} from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { JwtPayload } from './dto/jwt-payload.dto';
+import { LoginRequestDto } from './dto/login-request.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { compare, hash } from 'bcrypt';
+import { RegisterRequestDto } from './dto/register-request.dto';
+import { COMMON_CONSTANT } from 'src/constants/common.constant';
+import { RegisterResponseDto } from './dto/register-response.dto';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
-    private readonly databaseUtilService: DatabaseUtilService,
-  ) { }
+  ) {}
 
-  async validateUser(username: string, password: string): Promise<UserEntity> {
-    const user: UserEntity = await this.userRepository.findOne({
+  generateAccessToken(payload: JwtPayload): string {
+    return this.jwtService.sign(payload);
+  }
+
+  async login(loginRequestDto: LoginRequestDto): Promise<LoginResponseDto> {
+    const user = await this.userRepository.findOne({
       where: {
-        username
-      }
-    })
+        username: loginRequestDto.username,
+      },
+    });
 
-    if (user && user.password === password) {
-      return user
+    if (!user) {
+      throw new Error('USER_NOT_EXIST'); // TODO: ERROR HANDLER
     }
 
-    return null
-  }
+    const match = await compare(loginRequestDto.password, user.password);
+    if (!match) {
+      throw new Error('WRONG_USERNAME_OR_PASSWORD'); // TODO: ERROR HANDLER
+    }
 
-  async generateAccessToken(payload: JwtPayload): Promise<string> {
-    return this.jwtService.sign(payload)
-  }
-
-  async login(user: UserEntity): Promise<LoginResponseDto> {
-    const payload: JwtPayload = {
+    const accessToken = this.generateAccessToken({
       userId: user.id,
-      role: 'ADMIN'
-    }
-    
-    const accessToken = await this.generateAccessToken(payload)
+      role: 'ADMIN',
+    });
 
     return {
       accessToken,
-      refreshToken: ''
-    }
+      refreshToken: '',
+    };
   }
 
+  async register(
+    registerRequestDto: RegisterRequestDto,
+  ): Promise<RegisterResponseDto> {
+    const checkUserExist = await this.userRepository.findOne({
+      where: {
+        username: registerRequestDto.username,
+      },
+    });
 
+    if (checkUserExist) {
+      throw new Error('USER_EXISTED'); // TODO: ERROR HANDLER
+    }
+
+    let hashPassword = await hash(
+      registerRequestDto.password,
+      COMMON_CONSTANT.BCRYPT_SALT_ROUND,
+    );
+    const userCreated: UserEntity = await this.userRepository.save({
+      username: registerRequestDto.username,
+      password: hashPassword,
+    });
+    return {
+      id: userCreated.id,
+      username: userCreated.username,
+    };
+  }
 }

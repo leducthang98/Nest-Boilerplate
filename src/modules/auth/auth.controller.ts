@@ -1,32 +1,46 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { JwtDecodedData, Public } from 'src/decorators/auth.decorator';
 import { AuthService } from './auth.service';
+import { JwtPayload } from './dto/jwt-payload.dto';
 import { LoginRequestDto } from './dto/login-request.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { RegisterRequestDto } from './dto/register-request.dto';
+import { RegisterResponseDto } from './dto/register-response.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
 @ApiBearerAuth()
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
-  @ApiBody({
-    type: LoginRequestDto
-  })
   @Post('login')
+  @Public()
   async login(
-    @Request() req,
+    @Body() loginRequestDto: LoginRequestDto,
   ): Promise<LoginResponseDto> {
-    return this.authService.login(req.user)
+    return this.authService.login(loginRequestDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Post('register')
+  @Public()
+  async register(
+    @Body() registerRequestDto: RegisterRequestDto,
+  ): Promise<RegisterResponseDto> {
+    return this.authService.register(registerRequestDto);
+  }
+
   @Get('verify')
-  verify(@Request() req) {
-    return req.user
+  verify(@JwtDecodedData() data: JwtPayload): JwtPayload {
+    return data;
   }
 }

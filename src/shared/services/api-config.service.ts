@@ -6,7 +6,7 @@ import { isNil } from 'lodash';
 
 @Injectable()
 export class ApiConfigService {
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService) {}
 
   getEnv(key: string): string {
     const value = this.configService.get<string>(key);
@@ -42,8 +42,8 @@ export class ApiConfigService {
     return {
       secret: this.getEnv('JWT_ACCESS_TOKEN_SECRET'),
       signOptions: {
-        expiresIn: +this.getEnv('JWT_ACCESS_TOKEN_EXPIRATION_TIME')
-      }
-    }
+        expiresIn: +this.getEnv('JWT_ACCESS_TOKEN_EXPIRATION_TIME'),
+      },
+    };
   }
 }
