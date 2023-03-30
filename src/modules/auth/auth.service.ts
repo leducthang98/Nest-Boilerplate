@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
-import { DatabaseUtilService } from 'src/shared/services/database-util.service';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { JwtPayload } from './dto/jwt-payload.dto';
 import { LoginRequestDto } from './dto/login-request.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
-import { compare, hash } from 'bcrypt';
+import { compare, hash } from 'bcryptjs';
 import { RegisterRequestDto } from './dto/register-request.dto';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { RegisterResponseDto } from './dto/register-response.dto';
+import { Role } from 'src/constants/role.constant';
 @Injectable()
 export class AuthService {
   constructor(
@@ -41,7 +41,7 @@ export class AuthService {
 
     const accessToken = this.generateAccessToken({
       userId: user.id,
-      role: 'ADMIN',
+      role: Role.Admin,
     });
 
     return {
@@ -63,7 +63,7 @@ export class AuthService {
       throw new Error('USER_EXISTED'); // TODO: ERROR HANDLER
     }
 
-    let hashPassword = await hash(
+    const hashPassword = await hash(
       registerRequestDto.password,
       COMMON_CONSTANT.BCRYPT_SALT_ROUND,
     );

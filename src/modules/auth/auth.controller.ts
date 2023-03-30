@@ -1,21 +1,13 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
-import { JwtDecodedData, Public } from 'src/decorators/auth.decorator';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Role } from 'src/constants/role.constant';
+import { JwtDecodedData, Public, Roles } from 'src/decorators/auth.decorator';
 import { AuthService } from './auth.service';
 import { JwtPayload } from './dto/jwt-payload.dto';
 import { LoginRequestDto } from './dto/login-request.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { RegisterRequestDto } from './dto/register-request.dto';
 import { RegisterResponseDto } from './dto/register-response.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -40,6 +32,7 @@ export class AuthController {
   }
 
   @Get('verify')
+  @Roles([Role.Admin])
   verify(@JwtDecodedData() data: JwtPayload): JwtPayload {
     return data;
   }

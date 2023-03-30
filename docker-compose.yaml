@@ -18,3 +18,33 @@ services:
     platform: linux/x86_64
     ports:
       - 6389:6379
+
+  app:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      # app
+      - NODE_ENV=development
+      - APP_NAME=nest-boilerplate
+      - PORT=3000
+      # database
+      - DATABASE_TYPE=mysql
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_USERNAME=admin
+      - DATABASE_PASSWORD=1
+      - DATABASE_NAME=default
+      - DATABASE_LOG_ENABLE=true
+      - DATABASE_LIMIT_CONNECTION=5
+      # jwt
+      - JWT_ACCESS_TOKEN_SECRET=access-secret
+      - JWT_ACCESS_TOKEN_EXPIRATION_TIME=3600000
+      - JWT_REFRESH_TOKEN_SECRET=refresh-secret
+      - JWT_REFRESH_TOKEN_EXPIRATION_TIME=86400000
+      # redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - db
+      - redis
