@@ -10,7 +10,7 @@
 cp .env.example .env
 ```
 
-### run infrastructure services:
+### run infrastructure services (db, redis):
 ```
 docker-compose up -d
 ```
