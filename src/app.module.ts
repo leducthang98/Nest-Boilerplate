@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/guards/auth.guard';
 import { RoleGuard } from './modules/auth/guards/role.guard';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 
 @Module({
   imports: [
@@ -19,7 +20,16 @@ import { RoleGuard } from './modules/auth/guards/role.guard';
       imports: [SharedModule],
       inject: [ApiConfigService],
       useFactory: (configService: ApiConfigService) => {
-        return configService.mysqlConfig();
+        return configService.getMysqlConfig();
+      },
+    }),
+    RedisModule.forRootAsync({
+      imports: [SharedModule],
+      inject: [ApiConfigService],
+      useFactory: (configService: ApiConfigService) => {
+        return {
+          config: configService.getRedisConfig(),
+        };
       },
     }),
     SharedModule,

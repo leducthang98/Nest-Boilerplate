@@ -20,6 +20,6 @@ export class RoleGuard implements CanActivate {
       COMMON_CONSTANT.JWT_DECODED_REQUEST_PARAM
     ];
 
-    return requiredRoles.some((role) => decoded.role?.includes(role));
+    return requiredRoles.includes(decoded.role);
   }
 }

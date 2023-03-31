@@ -9,7 +9,7 @@ const providers = [ApiConfigService, DatabaseUtilService];
 const jwtModule = JwtModule.registerAsync({
   inject: [ApiConfigService],
   useFactory: (configService: ApiConfigService) => {
-    return configService.jwtConfig();
+    return configService.getJwtConfig();
   },
 });
 

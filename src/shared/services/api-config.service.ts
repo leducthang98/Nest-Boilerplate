@@ -1,8 +1,10 @@
+import { RedisClientOptions } from '@liaoliaots/nestjs-redis';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
+import { COMMON_CONSTANT } from 'src/constants/common.constant';
 
 @Injectable()
 export class ApiConfigService {
@@ -18,7 +20,7 @@ export class ApiConfigService {
     return value;
   }
 
-  mysqlConfig(): TypeOrmModuleOptions {
+  getMysqlConfig(): TypeOrmModuleOptions {
     const typeOrmConfig = {
       type: this.getEnv(`DATABASE_TYPE`),
       host: this.getEnv(`DATABASE_HOST`),
@@ -38,12 +40,24 @@ export class ApiConfigService {
     return typeOrmConfig as TypeOrmModuleOptions;
   }
 
-  jwtConfig(): JwtModuleOptions {
+  getJwtConfig(): JwtModuleOptions {
     return {
       secret: this.getEnv('JWT_ACCESS_TOKEN_SECRET'),
       signOptions: {
         expiresIn: +this.getEnv('JWT_ACCESS_TOKEN_EXPIRATION_TIME'),
       },
     };
+  }
+
+  getRedisConfig(): RedisClientOptions[] {
+    return [
+      {
+        namespace: COMMON_CONSTANT.REDIS_DEFAULT_NAMESPACE,
+        connectionName: COMMON_CONSTANT.REDIS_DEFAULT_NAMESPACE,
+        url: `redis://${this.getEnv('REDIS_HOST')}:${this.getEnv(
+          'REDIS_PORT',
+        )}/0`,
+      },
+    ];
   }
 }
