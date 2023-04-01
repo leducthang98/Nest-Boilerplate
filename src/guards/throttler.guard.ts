@@ -5,6 +5,7 @@ import { ERROR } from 'src/constants/exception.constant';
 
 @Injectable()
 export class ThrottlerBehindProxyGuard extends ThrottlerGuard {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected getTracker(req: Record<string, any>): string {
     return req.ips.length ? req.ips[0] : req.ip;
   }

@@ -5,29 +5,34 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { RESPONSE_MESSAGE } from 'src/decorators/response.decorator';
+import { LogService, LogStructure } from 'src/shared/services/logger.service';
 
-export interface Response<T> {
+export interface ResponseFormat<T> {
   code: number;
   message: string;
   data: T;
 }
 @Injectable()
 export class ResponseTransformInterceptor<T>
-  implements NestInterceptor<T, Response<T>>
+  implements NestInterceptor<T, ResponseFormat<T>>
 {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector, private logService: LogService) {}
 
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<Response<T>> {
+  ): Observable<ResponseFormat<T>> {
+    const request: Request = context.switchToHttp().getRequest();
+    const response: Response = context.switchToHttp().getResponse();
+
     return next.handle().pipe(
       map((data) => {
-        return {
+        const responsePayload = {
           code: COMMON_CONSTANT.RESPONSE_SUCCESS.CODE,
           message:
             this.reflector.get<string>(
@@ -36,6 +41,23 @@ export class ResponseTransformInterceptor<T>
             ) || COMMON_CONSTANT.RESPONSE_SUCCESS.MESSAGE,
           data: data.data || data,
         };
+
+        const logData: LogStructure = {
+          request: {
+            url: request.url,
+            method: request.method,
+            params: request.params,
+            body: request.body,
+          },
+          response: {
+            status: response.statusCode,
+            body: responsePayload,
+          },
+        };
+
+        this.logService.info(JSON.stringify(logData));
+
+        return responsePayload;
       }),
     );
   }

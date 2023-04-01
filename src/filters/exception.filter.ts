@@ -5,10 +5,12 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ERROR } from 'src/constants/exception.constant';
+import { LogService, LogStructure } from 'src/shared/services/logger.service';
 
 export class BaseException extends HttpException {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(response: string | Record<string, any>, status?: number) {
     super(response, status || HttpStatus.BAD_REQUEST);
   }
@@ -16,6 +18,8 @@ export class BaseException extends HttpException {
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  constructor(private logService: LogService) {}
+
   async catch(
     error: {
       response: {
@@ -31,6 +35,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     console.error(error);
 
     const ctx = host.switchToHttp();
+    const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
     const code = error?.response?.code;
@@ -41,10 +46,27 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? HttpStatus.INTERNAL_SERVER_ERROR
         : error.status;
 
-    response.status(status).json({
+    const responsePayload = {
       code: code || ERROR.UNKNOWN_ERROR.code,
       message: message || ERROR.UNKNOWN_ERROR.message,
       data: null,
-    });
+    };
+
+    const errorLogStructure: LogStructure = {
+      request: {
+        url: request.url,
+        method: request.method,
+        params: request.params,
+        body: request.body,
+      },
+      response: {
+        status,
+        body: responsePayload,
+      },
+    };
+
+    this.logService.error(JSON.stringify(errorLogStructure));
+
+    response.status(status).json(responsePayload);
   }
 }

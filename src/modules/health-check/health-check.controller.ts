@@ -18,7 +18,6 @@ export class HealthCheckController {
     const appName = this.configService.getEnv('APP_NAME');
 
     const status = await this.healthCheckService.healthCheck();
-
     return {
       appName,
       status,
