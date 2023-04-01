@@ -23,4 +23,8 @@ export const ERROR = {
     message: 'forbidden',
     code: 5,
   },
+  TOO_MANY_REQUESTS: {
+    message: 'too many requests',
+    code: 6,
+  },
 };

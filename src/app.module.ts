@@ -11,12 +11,19 @@ import { RoleGuard } from './guards/role.guard';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { ResponseTransformInterceptor } from './interceptors/response.interceptor';
 import { HttpExceptionFilter } from './filters/exception.filter';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerBehindProxyGuard } from './guards/throttler.guard';
+import { COMMON_CONSTANT } from './constants/common.constant';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+    ThrottlerModule.forRoot({
+      ttl: COMMON_CONSTANT.THROTTLER.TTL,
+      limit: COMMON_CONSTANT.THROTTLER.LIMIT,
     }),
     TypeOrmModule.forRootAsync({
       imports: [SharedModule],
@@ -41,6 +48,10 @@ import { HttpExceptionFilter } from './filters/exception.filter';
   providers: [
     {
       provide: APP_GUARD,
+      useClass: ThrottlerBehindProxyGuard
+    },
+    {
+      provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
     {
@@ -57,4 +68,4 @@ import { HttpExceptionFilter } from './filters/exception.filter';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

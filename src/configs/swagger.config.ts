@@ -7,6 +7,7 @@ export const initSwagger = (app: INestApplication, name: string) => {
     .setTitle(`${name}`)
     .build();
   const document = SwaggerModule.createDocument(app, options);
+  
   SwaggerModule.setup(`api/docs`, app, document, {
     customSiteTitle: `${name}`,
     swaggerOptions: {

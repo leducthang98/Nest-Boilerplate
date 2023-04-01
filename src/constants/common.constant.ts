@@ -6,4 +6,8 @@ export const COMMON_CONSTANT = {
     CODE: 0,
     MESSAGE: 'ok',
   },
+  THROTTLER: {
+    TTL: 60,
+    LIMIT: 100
+  }
 };
