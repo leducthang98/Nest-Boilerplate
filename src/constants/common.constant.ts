@@ -8,6 +8,6 @@ export const COMMON_CONSTANT = {
   },
   THROTTLER: {
     TTL: 60,
-    LIMIT: 100
-  }
+    LIMIT: 100,
+  },
 };

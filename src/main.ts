@@ -26,7 +26,7 @@ async function bootstrap() {
     }),
   );
 
-  app.enable('trust proxy')
+  app.enable('trust proxy');
   app.enableCors();
   app.enableShutdownHooks();
 

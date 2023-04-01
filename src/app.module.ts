@@ -48,7 +48,7 @@ import { COMMON_CONSTANT } from './constants/common.constant';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: ThrottlerBehindProxyGuard
+      useClass: ThrottlerBehindProxyGuard,
     },
     {
       provide: APP_GUARD,
@@ -68,4 +68,4 @@ import { COMMON_CONSTANT } from './constants/common.constant';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}
