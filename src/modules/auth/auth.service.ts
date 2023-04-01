@@ -14,6 +14,8 @@ import { Role } from 'src/constants/role.constant';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { CACHE_CONSTANT } from 'src/constants/cache.constant';
 import { Redis } from 'ioredis';
+import { BaseException } from 'src/filters/exception.filter';
+import { ERROR } from 'src/constants/exception.constant';
 @Injectable()
 export class AuthService {
   private redisInstance: Redis;
@@ -41,12 +43,12 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error('USER_NOT_EXIST'); // TODO: ERROR HANDLER
+      throw new BaseException(ERROR.USER_NOT_EXIST);
     }
 
     const match = await compare(loginRequestDto.password, user.password);
     if (!match) {
-      throw new Error('WRONG_USERNAME_OR_PASSWORD'); // TODO: ERROR HANDLER
+      throw new BaseException(ERROR.WRONG_USERNAME_OR_PASSWORD);
     }
 
     const accessToken = this.generateAccessToken({
@@ -78,7 +80,7 @@ export class AuthService {
     });
 
     if (checkUserExist) {
-      throw new Error('USER_EXISTED'); // TODO: ERROR HANDLER
+      throw new BaseException(ERROR.USER_EXISTED);
     }
 
     const hashPassword = await hash(

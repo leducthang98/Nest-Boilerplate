@@ -3,11 +3,11 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  HttpStatus,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { RESPONSE_MESSAGE } from 'src/decorators/response.decorator';
 
 export interface Response<T> {
@@ -28,12 +28,12 @@ export class ResponseTransformInterceptor<T>
     return next.handle().pipe(
       map((data) => {
         return {
-          code: HttpStatus.OK,
+          code: COMMON_CONSTANT.RESPONSE_SUCCESS.CODE,
           message:
             this.reflector.get<string>(
               RESPONSE_MESSAGE,
               context.getHandler(),
-            ) || 'ok',
+            ) || COMMON_CONSTANT.RESPONSE_SUCCESS.MESSAGE,
           data: data.data || data,
         };
       }),

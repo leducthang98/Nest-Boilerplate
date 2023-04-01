@@ -1,8 +1,15 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
+import { ERROR } from 'src/constants/exception.constant';
 import { Role } from 'src/constants/role.constant';
 import { ROLES_KEY } from 'src/decorators/auth.decorator';
+import { BaseException } from 'src/filters/exception.filter';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -16,10 +23,15 @@ export class RoleGuard implements CanActivate {
     if (!requiredRoles) {
       return true;
     }
+
     const decoded = context.switchToHttp().getRequest()[
       COMMON_CONSTANT.JWT_DECODED_REQUEST_PARAM
     ];
 
-    return requiredRoles.includes(decoded.role);
+    if (!requiredRoles.includes(decoded.role)) {
+      throw new BaseException(ERROR.FORBIDDEN, HttpStatus.FORBIDDEN);
+    }
+
+    return true;
   }
 }

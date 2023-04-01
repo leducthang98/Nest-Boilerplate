@@ -2,8 +2,8 @@ import { RedisService } from '@liaoliaots/nestjs-redis';
 import {
   CanActivate,
   ExecutionContext,
+  HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
@@ -14,6 +14,8 @@ import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { IS_PUBLIC } from 'src/decorators/auth.decorator';
 import { ApiConfigService } from 'src/shared/services/api-config.service';
 import { JwtPayload } from 'src/modules/auth/dto/jwt-payload.dto';
+import { BaseException } from 'src/filters/exception.filter';
+import { ERROR } from 'src/constants/exception.constant';
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   private redisInstance: Redis;
@@ -49,28 +51,25 @@ export class JwtAuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException();
+      throw new BaseException(ERROR.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
-    try {
-      const payload: JwtPayload = await this.jwtService.verifyAsync(token, {
-        secret: this.apiConfigService.getJwtConfig().secret,
-      });
 
-      const signature = token.split('.')[2];
+    const payload: JwtPayload = await this.jwtService.verifyAsync(token, {
+      secret: this.apiConfigService.getJwtConfig().secret,
+    });
 
-      const isExistSignature = await this.redisInstance.sismember(
-        `${CACHE_CONSTANT.SESSION_PREFIX}${payload.userId}`,
-        signature,
-      );
+    const signature = token.split('.')[2];
 
-      if (!isExistSignature) {
-        throw new UnauthorizedException();
-      }
+    const isExistSignature = await this.redisInstance.sismember(
+      `${CACHE_CONSTANT.SESSION_PREFIX}${payload.userId}`,
+      signature,
+    );
 
-      request[COMMON_CONSTANT.JWT_DECODED_REQUEST_PARAM] = payload;
-    } catch (error) {
-      throw new UnauthorizedException();
+    if (!isExistSignature) {
+      throw new BaseException(ERROR.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
+
+    request[COMMON_CONSTANT.JWT_DECODED_REQUEST_PARAM] = payload;
 
     return true;
   }

@@ -5,11 +5,12 @@ import { HealthCheckModule } from './modules/health-check/health-check.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.modules';
 import { AuthModule } from './modules/auth/auth.module';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { JwtAuthGuard } from './modules/auth/guards/auth.guard';
-import { RoleGuard } from './modules/auth/guards/role.guard';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { JwtAuthGuard } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guard';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { ResponseTransformInterceptor } from './interceptors/response.interceptor';
+import { HttpExceptionFilter } from './filters/exception.filter';
 
 @Module({
   imports: [
@@ -49,6 +50,10 @@ import { ResponseTransformInterceptor } from './interceptors/response.intercepto
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseTransformInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
     },
   ],
 })
