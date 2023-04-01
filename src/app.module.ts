@@ -14,6 +14,8 @@ import { HttpExceptionFilter } from './filters/exception.filter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerBehindProxyGuard } from './guards/throttler.guard';
 import { COMMON_CONSTANT } from './constants/common.constant';
+import { CronModule } from './modules/cron/cron.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { COMMON_CONSTANT } from './constants/common.constant';
       ttl: COMMON_CONSTANT.THROTTLER.TTL,
       limit: COMMON_CONSTANT.THROTTLER.LIMIT,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [SharedModule],
       inject: [ApiConfigService],
@@ -44,6 +47,7 @@ import { COMMON_CONSTANT } from './constants/common.constant';
     SharedModule,
     HealthCheckModule,
     AuthModule,
+    CronModule,
   ],
   providers: [
     {
