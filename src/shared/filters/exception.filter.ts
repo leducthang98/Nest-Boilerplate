@@ -6,6 +6,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import moment from 'moment';
+import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { ERROR } from 'src/constants/exception.constant';
 import { LogService, LogStructure } from 'src/shared/services/logger.service';
 
@@ -53,6 +55,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     };
 
     const errorLogStructure: LogStructure = {
+      timestamp: moment().format(COMMON_CONSTANT.TIME.DATE_TIME_FORMAT),
       request: {
         url: request.url,
         method: request.method,

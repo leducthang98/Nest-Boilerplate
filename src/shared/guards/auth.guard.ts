@@ -11,10 +11,10 @@ import { Request } from 'express';
 import { Redis } from 'ioredis';
 import { CACHE_CONSTANT } from 'src/constants/cache.constant';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
-import { IS_PUBLIC } from 'src/decorators/auth.decorator';
+import { IS_PUBLIC } from 'src/shared/decorators/auth.decorator';
 import { ApiConfigService } from 'src/shared/services/api-config.service';
 import { JwtPayload } from 'src/modules/auth/dto/jwt-payload.dto';
-import { BaseException } from 'src/filters/exception.filter';
+import { BaseException } from 'src/shared/filters/exception.filter';
 import { ERROR } from 'src/constants/exception.constant';
 @Injectable()
 export class JwtAuthGuard implements CanActivate {

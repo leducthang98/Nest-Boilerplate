@@ -2,7 +2,11 @@ import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { Role } from 'src/constants/role.constant';
-import { JwtDecodedData, Public, Roles } from 'src/decorators/auth.decorator';
+import {
+  JwtDecodedData,
+  Public,
+  Roles,
+} from 'src/shared/decorators/auth.decorator';
 import { AuthService } from './auth.service';
 import { JwtPayload } from './dto/jwt-payload.dto';
 import { LoginRequestDto } from './dto/login-request.dto';

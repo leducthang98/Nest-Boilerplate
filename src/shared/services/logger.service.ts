@@ -3,6 +3,7 @@ import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
 export interface LogStructure {
+  timestamp: string;
   request: {
     url: string;
     method: string;

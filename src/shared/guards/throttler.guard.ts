@@ -1,6 +1,6 @@
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
-import { BaseException } from 'src/filters/exception.filter';
+import { BaseException } from 'src/shared/filters/exception.filter';
 import { ERROR } from 'src/constants/exception.constant';
 
 @Injectable()

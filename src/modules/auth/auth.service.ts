@@ -14,7 +14,7 @@ import { Role } from 'src/constants/role.constant';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { CACHE_CONSTANT } from 'src/constants/cache.constant';
 import { Redis } from 'ioredis';
-import { BaseException } from 'src/filters/exception.filter';
+import { BaseException } from 'src/shared/filters/exception.filter';
 import { ERROR } from 'src/constants/exception.constant';
 @Injectable()
 export class AuthService {

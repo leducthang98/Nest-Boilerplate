@@ -6,10 +6,11 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request, Response } from 'express';
+import moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
-import { RESPONSE_MESSAGE } from 'src/decorators/response.decorator';
+import { RESPONSE_MESSAGE } from 'src/shared/decorators/response.decorator';
 import { LogService, LogStructure } from 'src/shared/services/logger.service';
 
 export interface ResponseFormat<T> {
@@ -43,6 +44,7 @@ export class ResponseTransformInterceptor<T>
         };
 
         const logData: LogStructure = {
+          timestamp: moment().format(COMMON_CONSTANT.TIME.DATE_TIME_FORMAT),
           request: {
             url: request.url,
             method: request.method,

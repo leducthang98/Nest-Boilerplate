@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiConfigService } from 'src/shared/services/api-config.service';
 import { HealthCheckService } from './health-check.service';
-import { Public } from 'src/decorators/auth.decorator';
+import { Public } from 'src/shared/decorators/auth.decorator';
 
 @Controller('health-check')
 @ApiTags('HealthCheck')
