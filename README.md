@@ -22,11 +22,6 @@ package.json
 docker-compose up -d
 ```
 
-### migrate database:
-```
-yarn typeorm:migrate
-```
-
 ### start dev:
 ```
 yarn install
@@ -43,5 +38,9 @@ yarn start:prod
 ### generate new modules:
 ```
 nest g res ${module-name} modules
-// NOTE: remember to import typeorm entities
+```
+
+### migrate database:
+```
+yarn typeorm:migrate
 ```
