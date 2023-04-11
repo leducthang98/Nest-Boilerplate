@@ -5,16 +5,16 @@
 - nodejs >=16.0.0
 - yarn >=1.22.0
 
-### copy .env
-```
-cp .env.example .env
-```
-
-### change to your project name:
+### change to your project configs (name, port):
 ```
 .env.example
 docker-compose.yaml
 package.json
+```
+
+### copy .env
+```
+cp .env.example .env
 ```
 
 ### run infrastructure services (db, redis):
