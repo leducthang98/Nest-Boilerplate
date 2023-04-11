@@ -10,6 +10,13 @@
 cp .env.example .env
 ```
 
+### change to your project name:
+```
+.env.example
+docker-compose.yaml
+package.json
+```
+
 ### run infrastructure services (db, redis):
 ```
 docker-compose up -d
