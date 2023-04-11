@@ -33,33 +33,35 @@ export class ResponseTransformInterceptor<T>
 
     return next.handle().pipe(
       map((data) => {
-        const responsePayload = {
-          code: COMMON_CONSTANT.RESPONSE_SUCCESS.CODE,
-          message:
-            this.reflector.get<string>(
-              RESPONSE_MESSAGE,
-              context.getHandler(),
-            ) || COMMON_CONSTANT.RESPONSE_SUCCESS.MESSAGE,
-          data: data.data || data,
-        };
+        if (data) {
+          const responsePayload = {
+            code: COMMON_CONSTANT.RESPONSE_SUCCESS.CODE,
+            message:
+              this.reflector.get<string>(
+                RESPONSE_MESSAGE,
+                context.getHandler(),
+              ) || COMMON_CONSTANT.RESPONSE_SUCCESS.MESSAGE,
+            data: data.data || data,
+          };
 
-        const logData: LogStructure = {
-          timestamp: moment().format(COMMON_CONSTANT.TIME.DATE_TIME_FORMAT),
-          request: {
-            url: request.url,
-            method: request.method,
-            params: request.params,
-            body: request.body,
-          },
-          response: {
-            status: response.statusCode,
-            body: responsePayload,
-          },
-        };
+          const logData: LogStructure = {
+            timestamp: moment().format(COMMON_CONSTANT.TIME.DATE_TIME_FORMAT),
+            request: {
+              url: request.url,
+              method: request.method,
+              params: request.params,
+              body: request.body,
+            },
+            response: {
+              status: response.statusCode,
+              body: responsePayload,
+            },
+          };
 
-        this.logService.info(JSON.stringify(logData));
+          this.logService.info(JSON.stringify(logData));
 
-        return responsePayload;
+          return responsePayload;
+        }
       }),
     );
   }
