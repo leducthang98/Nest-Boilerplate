@@ -17,6 +17,7 @@
     "start:prod": "node dist/main",
     "clean": "rm -rf node_modules dist logs yarn-error.log",
     "typeorm:migrate": "typeorm-ts-node-commonjs migration:run -d ./src/data-source.ts",
+    "typeorm:generate": "typeorm-ts-node-commonjs migration:generate -d ./src/data-source.ts",
     "typeorm:revert": "typeorm-ts-node-commonjs migration:revert -d ./src/data-source.ts",
     "typeorm:create": "typeorm-ts-node-commonjs migration:create",
     "format": "prettier --write \"src/**/*.ts\"",

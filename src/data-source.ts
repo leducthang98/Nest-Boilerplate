@@ -11,6 +11,7 @@ const dataSource = new DataSource({
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   migrations: [__dirname + '/migrations/*.ts'],
+  entities: [__dirname + '/entities/*.ts'],
   logging: true,
   extra: {
     connectionLimit: process.env.DATABASE_LIMIT_CONNECTION,

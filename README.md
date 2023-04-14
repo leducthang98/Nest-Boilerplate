@@ -41,6 +41,6 @@ nest g res ${module-name} modules
 ```
 
 ### migrate database:
-```
-yarn typeorm:migrate
-```
+- update entity
+- yarn typeorm:generate src/migrations/${filename} (Note: this command will generate base on current db's table)
+- yarn typeorm:migrate
