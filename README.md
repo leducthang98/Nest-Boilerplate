@@ -19,7 +19,7 @@ cp .env.example .env
 
 ### run infrastructure services (db, redis):
 ```
-docker-compose up -d
+docker-compose up db redis -d
 ```
 
 ### prepare migration (manual):
