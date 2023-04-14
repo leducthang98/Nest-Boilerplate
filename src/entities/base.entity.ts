@@ -1,9 +1,9 @@
-import { Column } from 'typeorm';
+import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export class BaseEntity {
-  @Column()
+  @CreateDateColumn()
   createdAt?: string;
 
-  @Column()
+  @UpdateDateColumn()
   updatedAt?: string;
 }
