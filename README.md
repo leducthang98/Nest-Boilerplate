@@ -39,8 +39,3 @@ yarn start:prod
 ```
 nest g res ${module-name} modules
 ```
-
-### migrate database:
-- update entity
-- yarn typeorm:generate src/migrations/${filename} (Note: this command will generate base on current db's table)
-- yarn typeorm:migrate
