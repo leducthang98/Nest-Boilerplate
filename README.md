@@ -22,6 +22,11 @@ cp .env.example .env
 docker-compose up -d
 ```
 
+### prepare migration (manual):
+```
+cat src/migrations/MIGRATION-GUIDE.md
+```
+
 ### start dev:
 ```
 yarn install
