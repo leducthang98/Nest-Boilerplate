@@ -16,6 +16,7 @@ import { ApiConfigService } from 'src/shared/services/api-config.service';
 import { JwtPayload } from 'src/modules/auth/dto/jwt-payload.dto';
 import { BaseException } from 'src/shared/filters/exception.filter';
 import { ERROR } from 'src/constants/exception.constant';
+
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   private redisInstance: Redis;
@@ -57,6 +58,10 @@ export class JwtAuthGuard implements CanActivate {
     const payload: JwtPayload = await this.jwtService.verifyAsync(token, {
       secret: this.apiConfigService.getJwtConfig().secret,
     });
+    
+    // TODO: remove from redis if token is expired
+    // TODO: clear expired token in redis
+    // TODO: add refresh token concept
 
     const signature = token.split('.')[2];
 
