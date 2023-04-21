@@ -58,8 +58,7 @@ export class JwtAuthGuard implements CanActivate {
     const payload: JwtPayload = await this.jwtService.verifyAsync(token, {
       secret: this.apiConfigService.getJwtConfig().secret,
     });
-    
-    // TODO: remove from redis if token is expired
+
     // TODO: clear expired token in redis
     // TODO: add refresh token concept
 

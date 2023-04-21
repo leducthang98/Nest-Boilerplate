@@ -16,6 +16,7 @@ import { CACHE_CONSTANT } from 'src/constants/cache.constant';
 import { Redis } from 'ioredis';
 import { BaseException } from 'src/shared/filters/exception.filter';
 import { ERROR } from 'src/constants/exception.constant';
+import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class AuthService {
   private redisInstance: Redis;
@@ -33,6 +34,10 @@ export class AuthService {
 
   generateAccessToken(payload: JwtPayload): string {
     return this.jwtService.sign(payload);
+  }
+
+  generateRefreshToken(): string {
+    return uuidv4();
   }
 
   async login(loginRequestDto: LoginRequestDto): Promise<LoginResponseDto> {
@@ -58,6 +63,9 @@ export class AuthService {
 
     const signature = accessToken.split('.')[2];
 
+    // TODO: store in redis with access token
+    const refreshToken = this.generateRefreshToken();
+
     // save key into redis
     await this.redisInstance.sadd(
       `${CACHE_CONSTANT.SESSION_PREFIX}${user.id}`,
@@ -66,7 +74,7 @@ export class AuthService {
 
     return {
       accessToken,
-      refreshToken: '',
+      refreshToken,
     };
   }
 
