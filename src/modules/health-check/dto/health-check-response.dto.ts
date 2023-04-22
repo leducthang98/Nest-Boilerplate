@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class LoginResponseDto {
+export class HealthCheckResponseDto {
   @ApiProperty()
-  accessToken: string;
+  appName: string;
 
   @ApiProperty()
-  refreshToken: string;
+  status: boolean;
 }
