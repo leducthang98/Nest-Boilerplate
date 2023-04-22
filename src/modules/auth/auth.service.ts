@@ -16,16 +16,18 @@ import { CACHE_CONSTANT } from 'src/constants/cache.constant';
 import { Redis } from 'ioredis';
 import { BaseException } from 'src/shared/filters/exception.filter';
 import { ERROR } from 'src/constants/exception.constant';
-import { v4 as uuidv4 } from 'uuid';
+import { ApiConfigService } from 'src/shared/services/api-config.service';
+
 @Injectable()
 export class AuthService {
   private redisInstance: Redis;
 
   constructor(
-    private readonly jwtService: JwtService,
-    private readonly redisService: RedisService,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly jwtService: JwtService,
+    private readonly redisService: RedisService,
+    private readonly apiConfigService: ApiConfigService,
   ) {
     this.redisInstance = this.redisService.getClient(
       COMMON_CONSTANT.REDIS_DEFAULT_NAMESPACE,
@@ -36,8 +38,13 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  generateRefreshToken(): string {
-    return uuidv4();
+  generateRefreshToken(payload: JwtPayload): string {
+    return this.jwtService.sign(payload, {
+      expiresIn: this.apiConfigService.getEnv(
+        'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+      ),
+      secret: this.apiConfigService.getEnv('JWT_REFRESH_TOKEN_SECRET'),
+    });
   }
 
   async login(loginRequestDto: LoginRequestDto): Promise<LoginResponseDto> {
@@ -61,15 +68,19 @@ export class AuthService {
       role: Role.Admin,
     });
 
-    const signature = accessToken.split('.')[2];
+    const signatureAccessToken = accessToken.split('.')[2];
 
-    // TODO: store in redis with access token
-    const refreshToken = this.generateRefreshToken();
+    const refreshToken = this.generateRefreshToken({
+      userId: user.id,
+      role: Role.Admin,
+    });
 
-    // save key into redis
-    await this.redisInstance.sadd(
+    const signatureRefreshToken = refreshToken.split('.')[2];
+
+    await this.redisInstance.hsetnx(
       `${CACHE_CONSTANT.SESSION_PREFIX}${user.id}`,
-      signature,
+      signatureAccessToken,
+      signatureRefreshToken,
     );
 
     return {
@@ -105,19 +116,89 @@ export class AuthService {
     };
   }
 
-  async logout(token: string, userId: string): Promise<boolean> {
-    const signature = token.split('.')[2];
-    return Boolean(
-      this.redisInstance.srem(
-        `${CACHE_CONSTANT.SESSION_PREFIX}${userId}`,
-        signature,
-      ),
+  async logout(accessToken: string, userId: string): Promise<boolean> {
+    const signature = accessToken.split('.')[2];
+    const logoutResult = await this.redisInstance.hdel(
+      `${CACHE_CONSTANT.SESSION_PREFIX}${userId}`,
+      signature,
     );
+
+    return Boolean(logoutResult);
   }
 
   async revokeUser(userId: string): Promise<boolean> {
-    return Boolean(
-      this.redisInstance.del(`${CACHE_CONSTANT.SESSION_PREFIX}${userId}`),
+    const revokeResult = await this.redisInstance.del(
+      `${CACHE_CONSTANT.SESSION_PREFIX}${userId}`,
     );
+
+    return Boolean(revokeResult);
+  }
+
+  async refreshToken(
+    accessToken: string,
+    refreshToken: string,
+  ): Promise<LoginResponseDto> {
+    const signatureAccessToken = accessToken.split('.')[2];
+    const signatureRefreshToken = refreshToken.split('.')[2];
+
+    let payload: JwtPayload;
+
+    try {
+      payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.apiConfigService.getEnv('JWT_REFRESH_TOKEN_SECRET'),
+      });
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        payload = this.jwtService.decode(refreshToken) as JwtPayload;
+        await this.redisInstance.hdel(
+          `${CACHE_CONSTANT.SESSION_PREFIX}${payload.userId}`,
+          signatureAccessToken,
+        );
+        throw new BaseException(ERROR.REFRESH_TOKEN_EXPIRED);
+      } else {
+        throw new BaseException(ERROR.REFRESH_TOKEN_FAIL);
+      }
+    }
+
+    const signatureRefreshTokenCache = await this.redisInstance.hget(
+      `${CACHE_CONSTANT.SESSION_PREFIX}${payload.userId}`,
+      signatureAccessToken,
+    );
+
+    if (
+      !signatureRefreshTokenCache ||
+      signatureRefreshTokenCache !== signatureRefreshToken
+    ) {
+      throw new BaseException(ERROR.REFRESH_TOKEN_FAIL);
+    }
+
+    const newAccessToken = this.generateAccessToken({
+      userId: payload.userId,
+      role: payload.role,
+    });
+
+    const newRefreshToken = this.generateRefreshToken({
+      userId: payload.userId,
+      role: payload.role,
+    });
+
+    const newSignatureAccessToken = newAccessToken.split('.')[2];
+    const newSignatureRefreshToken = newRefreshToken.split('.')[2];
+
+    await this.redisInstance.hsetnx(
+      `${CACHE_CONSTANT.SESSION_PREFIX}${payload.userId}`,
+      newSignatureAccessToken,
+      newSignatureRefreshToken,
+    );
+
+    await this.redisInstance.hdel(
+      `${CACHE_CONSTANT.SESSION_PREFIX}${payload.userId}`,
+      signatureAccessToken,
+    );
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
   }
 }

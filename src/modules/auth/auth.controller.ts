@@ -14,6 +14,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { RegisterRequestDto } from './dto/register-request.dto';
 import { RegisterResponseDto } from './dto/register-response.dto';
 import { RevokeUserRequestDto } from './dto/revoke-user-request.dto';
+import { RefreshTokenRequestDto } from './dto/refresh-token-request.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -29,6 +30,12 @@ export class AuthController {
     return this.authService.login(loginRequestDto);
   }
 
+  @Get('verify')
+  @Roles([Role.Admin])
+  verify(@JwtDecodedData() data: JwtPayload): JwtPayload {
+    return data;
+  }
+
   @Post('register')
   @Public()
   async register(
@@ -38,20 +45,32 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout(@Req() req: Request, @JwtDecodedData() data: JwtPayload) {
+  async logout(@Req() req: Request, @JwtDecodedData() data: JwtPayload) {
     const token = req.headers.authorization.split(' ')[1];
-    return this.authService.logout(token, data.userId);
-  }
-
-  @Get('verify')
-  @Roles([Role.Admin])
-  verify(@JwtDecodedData() data: JwtPayload): JwtPayload {
-    return data;
+    const logoutResult = await this.authService.logout(token, data.userId);
+    return {
+      logoutResult,
+    };
   }
 
   @Post('revoke-user')
   @Roles([Role.Root])
-  revokeUser(@Body() revokeUserRequestDto: RevokeUserRequestDto) {
-    return this.authService.revokeUser(revokeUserRequestDto.id);
+  @Public()
+  async revokeUser(@Body() revokeUserRequestDto: RevokeUserRequestDto) {
+    const revokeResult = await this.authService.revokeUser(
+      revokeUserRequestDto.id,
+    );
+    return {
+      revokeResult,
+    };
+  }
+
+  @Post('refresh-token')
+  @Public()
+  refreshToken(@Body() refreshTokenRequestDto: RefreshTokenRequestDto) {
+    return this.authService.refreshToken(
+      refreshTokenRequestDto.accessToken,
+      refreshTokenRequestDto.refreshToken,
+    );
   }
 }

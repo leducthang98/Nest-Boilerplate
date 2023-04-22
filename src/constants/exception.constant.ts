@@ -27,4 +27,12 @@ export const ERROR = {
     message: 'too many requests',
     code: 6,
   },
+  REFRESH_TOKEN_FAIL: {
+    message: 'refresh token fail',
+    code: 6,
+  },
+  REFRESH_TOKEN_EXPIRED: {
+    message: 'refresh token expired',
+    code: 6,
+  },
 };

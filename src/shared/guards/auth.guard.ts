@@ -12,7 +12,6 @@ import { Redis } from 'ioredis';
 import { CACHE_CONSTANT } from 'src/constants/cache.constant';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { IS_PUBLIC } from 'src/shared/decorators/auth.decorator';
-import { ApiConfigService } from 'src/shared/services/api-config.service';
 import { JwtPayload } from 'src/modules/auth/dto/jwt-payload.dto';
 import { BaseException } from 'src/shared/filters/exception.filter';
 import { ERROR } from 'src/constants/exception.constant';
@@ -23,7 +22,6 @@ export class JwtAuthGuard implements CanActivate {
 
   constructor(
     private jwtService: JwtService,
-    private apiConfigService: ApiConfigService,
     private reflector: Reflector,
     private redisService: RedisService,
   ) {
@@ -38,43 +36,43 @@ export class JwtAuthGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    try {
+      const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC, [
+        context.getHandler(),
+        context.getClass(),
+      ]);
 
-    if (isPublic) {
+      if (isPublic) {
+        return true;
+      }
+
+      const request = context.switchToHttp().getRequest();
+
+      const token = this.extractTokenFromHeader(request);
+
+      if (!token) {
+        throw new BaseException(ERROR.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+      }
+
+      const payload: JwtPayload = await this.jwtService.verifyAsync(token);
+
+      const signature = token.split('.')[2];
+
+      const isExistSignature = await this.redisInstance.hexists(
+        `${CACHE_CONSTANT.SESSION_PREFIX}${payload.userId}`,
+        signature,
+      );
+
+      if (!isExistSignature) {
+        throw new BaseException(ERROR.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+      }
+
+      request[COMMON_CONSTANT.JWT_DECODED_REQUEST_PARAM] = payload;
+
       return true;
-    }
-
-    const request = context.switchToHttp().getRequest();
-
-    const token = this.extractTokenFromHeader(request);
-
-    if (!token) {
+    } catch (error) {
+      console.error(error);
       throw new BaseException(ERROR.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
-
-    const payload: JwtPayload = await this.jwtService.verifyAsync(token, {
-      secret: this.apiConfigService.getJwtConfig().secret,
-    });
-
-    // TODO: clear expired token in redis
-    // TODO: add refresh token concept
-
-    const signature = token.split('.')[2];
-
-    const isExistSignature = await this.redisInstance.sismember(
-      `${CACHE_CONSTANT.SESSION_PREFIX}${payload.userId}`,
-      signature,
-    );
-
-    if (!isExistSignature) {
-      throw new BaseException(ERROR.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
-    }
-
-    request[COMMON_CONSTANT.JWT_DECODED_REQUEST_PARAM] = payload;
-
-    return true;
   }
 }
