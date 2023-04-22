@@ -55,7 +55,6 @@ export class AuthController {
 
   @Post('revoke-user')
   @Roles([Role.Root])
-  @Public()
   async revokeUser(@Body() revokeUserRequestDto: RevokeUserRequestDto) {
     const revokeResult = await this.authService.revokeUser(
       revokeUserRequestDto.id,
