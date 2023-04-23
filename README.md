@@ -52,13 +52,11 @@ cat src/migrations/MIGRATION-GUIDE.md
 
 #### 6.1. start in the development environment:
 ```
-yarn install
 yarn start:dev
 ```
 
 #### 6.2. start in the production environment:
 ```
-yarn install
 yarn build
 yarn start:prod
 ```
