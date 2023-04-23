@@ -1,21 +1,22 @@
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { HealthCheckModule } from './modules/health-check/health-check.module';
-import { ApiConfigService } from './shared/services/api-config.service';
-import { SharedModule } from './shared/shared.modules';
-import { AuthModule } from './modules/auth/auth.module';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { COMMON_CONSTANT } from './constants/common.constant';
+import { AuthModule } from './modules/auth/auth.module';
+import { CronModule } from './modules/cron/cron.module';
+import { HealthCheckModule } from './modules/health-check/health-check.module';
+import { HttpExceptionFilter } from './shared/filters/exception.filter';
 import { JwtAuthGuard } from './shared/guards/auth.guard';
 import { RoleGuard } from './shared/guards/role.guard';
-import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { ResponseTransformInterceptor } from './shared/interceptors/response.interceptor';
-import { HttpExceptionFilter } from './shared/filters/exception.filter';
-import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerBehindProxyGuard } from './shared/guards/throttler.guard';
-import { COMMON_CONSTANT } from './constants/common.constant';
-import { CronModule } from './modules/cron/cron.module';
-import { ScheduleModule } from '@nestjs/schedule';
+import { ResponseTransformInterceptor } from './shared/interceptors/response.interceptor';
+import { ApiConfigService } from './shared/services/api-config.service';
+import { SharedModule } from './shared/shared.modules';
 
 @Module({
   imports: [
@@ -31,18 +32,15 @@ import { ScheduleModule } from '@nestjs/schedule';
     TypeOrmModule.forRootAsync({
       imports: [SharedModule],
       inject: [ApiConfigService],
-      useFactory: (configService: ApiConfigService) => {
-        return configService.getMysqlConfig();
-      },
+      useFactory: (configService: ApiConfigService) =>
+        configService.getMysqlConfig(),
     }),
     RedisModule.forRootAsync({
       imports: [SharedModule],
       inject: [ApiConfigService],
-      useFactory: (configService: ApiConfigService) => {
-        return {
-          config: configService.getRedisConfig(),
-        };
-      },
+      useFactory: (configService: ApiConfigService) => ({
+        config: configService.getRedisConfig(),
+      }),
     }),
     SharedModule,
     HealthCheckModule,

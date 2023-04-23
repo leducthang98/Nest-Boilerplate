@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, QueryRunner } from 'typeorm';
+import type { DataSource, QueryRunner } from 'typeorm';
 
 @Injectable()
 export class DatabaseUtilService {
@@ -13,15 +13,18 @@ export class DatabaseUtilService {
     const queryRunner: QueryRunner = datasource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
+
     try {
       result = await callback(queryRunner);
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
+
       throw error;
     } finally {
       await queryRunner.release();
     }
+
     return result;
   }
 }

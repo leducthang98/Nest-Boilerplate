@@ -1,22 +1,23 @@
+import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
-import { JwtPayload } from './dto/jwt-payload.dto';
-import { LoginRequestDto } from './dto/login-request.dto';
-import { LoginResponseDto } from './dto/login-response.dto';
 import { compare, hash } from 'bcryptjs';
-import { RegisterRequestDto } from './dto/register-request.dto';
-import { COMMON_CONSTANT } from 'src/constants/common.constant';
-import { RegisterResponseDto } from './dto/register-response.dto';
-import { Role } from 'src/constants/role.constant';
-import { RedisService } from '@liaoliaots/nestjs-redis';
+import type { Redis } from 'ioredis';
 import { CACHE_CONSTANT } from 'src/constants/cache.constant';
-import { Redis } from 'ioredis';
-import { BaseException } from 'src/shared/filters/exception.filter';
+import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { ERROR } from 'src/constants/exception.constant';
+import { Role } from 'src/constants/role.constant';
+import { UserEntity } from 'src/entities/user.entity';
+import { BaseException } from 'src/shared/filters/exception.filter';
 import { ApiConfigService } from 'src/shared/services/api-config.service';
+import { Repository } from 'typeorm';
+
+import type { JwtPayload } from './dto/jwt-payload.dto';
+import type { LoginRequestDto } from './dto/login-request.dto';
+import type { LoginResponseDto } from './dto/login-response.dto';
+import type { RegisterRequestDto } from './dto/register-request.dto';
+import type { RegisterResponseDto } from './dto/register-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -59,6 +60,7 @@ export class AuthService {
     }
 
     const match = await compare(loginRequestDto.password, user.password);
+
     if (!match) {
       throw new BaseException(ERROR.WRONG_USERNAME_OR_PASSWORD);
     }
@@ -110,6 +112,7 @@ export class AuthService {
       username: registerRequestDto.username,
       password: hashPassword,
     });
+
     return {
       id: userCreated.id,
       username: userCreated.username,
@@ -154,6 +157,7 @@ export class AuthService {
           `${CACHE_CONSTANT.SESSION_PREFIX}${payload.userId}`,
           signatureAccessToken,
         );
+
         throw new BaseException(ERROR.REFRESH_TOKEN_EXPIRED);
       } else {
         throw new BaseException(ERROR.REFRESH_TOKEN_FAIL);

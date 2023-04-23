@@ -1,20 +1,16 @@
 import { RedisService } from '@liaoliaots/nestjs-redis';
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import type { CanActivate, ExecutionContext } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
-import { Redis } from 'ioredis';
+import type { Request } from 'express';
+import type { Redis } from 'ioredis';
 import { CACHE_CONSTANT } from 'src/constants/cache.constant';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
-import { IS_PUBLIC } from 'src/shared/decorators/auth.decorator';
-import { JwtPayload } from 'src/modules/auth/dto/jwt-payload.dto';
-import { BaseException } from 'src/shared/filters/exception.filter';
 import { ERROR } from 'src/constants/exception.constant';
+import type { JwtPayload } from 'src/modules/auth/dto/jwt-payload.dto';
+import { IS_PUBLIC } from 'src/shared/decorators/auth.decorator';
+import { BaseException } from 'src/shared/filters/exception.filter';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -32,6 +28,7 @@ export class JwtAuthGuard implements CanActivate {
 
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
+
     return type === 'Bearer' ? token : undefined;
   }
 
@@ -72,6 +69,7 @@ export class JwtAuthGuard implements CanActivate {
       return true;
     } catch (error) {
       console.error(error);
+
       throw new BaseException(ERROR.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
   }

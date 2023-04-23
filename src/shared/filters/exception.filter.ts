@@ -1,15 +1,11 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
+import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
+import { Catch, HttpException, HttpStatus } from '@nestjs/common';
+import type { Request, Response } from 'express';
 import moment from 'moment';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { ERROR } from 'src/constants/exception.constant';
-import { LogService, LogStructure } from 'src/shared/services/logger.service';
+import type { LogStructure } from 'src/shared/services/logger.service';
+import { LogService } from 'src/shared/services/logger.service';
 
 export class BaseException extends HttpException {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +18,7 @@ export class BaseException extends HttpException {
 export class HttpExceptionFilter implements ExceptionFilter {
   constructor(private logService: LogService) {}
 
-  async catch(
+  catch(
     error: {
       response: {
         message: string;
@@ -33,7 +29,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       name: string;
     },
     host: ArgumentsHost,
-  ): Promise<void> {
+  ) {
     console.error(error);
 
     const ctx = host.switchToHttp();

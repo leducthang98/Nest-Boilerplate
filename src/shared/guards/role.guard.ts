@@ -1,13 +1,9 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import type { CanActivate, ExecutionContext } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { ERROR } from 'src/constants/exception.constant';
-import { Role } from 'src/constants/role.constant';
+import type { Role } from 'src/constants/role.constant';
 import { ROLES_KEY } from 'src/shared/decorators/auth.decorator';
 import { BaseException } from 'src/shared/filters/exception.filter';
 
@@ -20,6 +16,7 @@ export class RoleGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+
     if (!requiredRoles) {
       return true;
     }

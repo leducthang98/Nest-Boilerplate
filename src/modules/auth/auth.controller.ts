@@ -7,17 +7,18 @@ import {
   Public,
   Roles,
 } from 'src/shared/decorators/auth.decorator';
+
 import { AuthService } from './auth.service';
 import { JwtPayload } from './dto/jwt-payload.dto';
 import { LoginRequestDto } from './dto/login-request.dto';
-import { LoginResponseDto } from './dto/login-response.dto';
-import { RegisterRequestDto } from './dto/register-request.dto';
-import { RegisterResponseDto } from './dto/register-response.dto';
-import { RevokeUserRequestDto } from './dto/revoke-user-request.dto';
+import type { LoginResponseDto } from './dto/login-response.dto';
+import type { LogoutResponseDto } from './dto/logout-response.dto';
 import { RefreshTokenRequestDto } from './dto/refresh-token-request.dto';
-import { RefreshTokenResponseDto } from './dto/refresh-token-response.dto';
-import { LogoutResponseDto } from './dto/logout-response.dto';
-import { RevokeUserResponseDto } from './dto/revoke-user-response.dto';
+import type { RefreshTokenResponseDto } from './dto/refresh-token-response.dto';
+import { RegisterRequestDto } from './dto/register-request.dto';
+import type { RegisterResponseDto } from './dto/register-response.dto';
+import { RevokeUserRequestDto } from './dto/revoke-user-request.dto';
+import type { RevokeUserResponseDto } from './dto/revoke-user-response.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -65,6 +66,7 @@ export class AuthController {
   ): Promise<LogoutResponseDto> {
     const token = req.headers.authorization.split(' ')[1];
     const logoutResult = await this.authService.logout(token, data.userId);
+
     return {
       logoutResult,
     };
@@ -78,6 +80,7 @@ export class AuthController {
     const revokeResult = await this.authService.revokeUser(
       revokeUserRequestDto.id,
     );
+
     return {
       revokeResult,
     };
