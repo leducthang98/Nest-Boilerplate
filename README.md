@@ -1,4 +1,4 @@
-# nestjs-project
+# nest boilerplate
 
 ## require:
 - docker
