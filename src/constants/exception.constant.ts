@@ -29,10 +29,10 @@ export const ERROR = {
   },
   REFRESH_TOKEN_FAIL: {
     message: 'refresh token fail',
-    code: 6,
+    code: 7,
   },
   REFRESH_TOKEN_EXPIRED: {
     message: 'refresh token expired',
-    code: 6,
+    code: 8,
   },
 };
