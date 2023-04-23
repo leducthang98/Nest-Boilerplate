@@ -1,46 +1,65 @@
 # nest boilerplate
 
-## require:
+## features:
+- eslint
+- dockerize
+- swagger
+- typeorm
+- logger
+- cron-job
+- exception-filter
+- response-format 
+- health-check-module
+- auth-module
+    - login
+    - register
+    - refresh-token
+    - revoke-token
+
+## technical requirements:
 - docker
+- docker-compose
 - nodejs >=16.0.0
 - yarn >=1.22.0
 
-### change to your project configs (name, port):
+## installation guide:
+#### 1. prepare project's configurations:
 ```
 .env.example
 docker-compose.yaml
 package.json
 ```
 
-### copy .env
+#### 2. copy `.env`
 ```
 cp .env.example .env
 ```
 
-### run infrastructure services (db, redis):
+#### 3. run infrastructure services:
 ```
 docker-compose up db redis -d
 ```
 
-### prepare migration (manual):
+#### 4. prepare migration (please read MIGRATION-GUIDE.md, and then manually perform the migration following the steps outlined in the guide):
 ```
 cat src/migrations/MIGRATION-GUIDE.md
 ```
 
-### start dev:
+#### 5.1. start dev:
 ```
 yarn install
 yarn start:dev
 ```
 
-### start prod:
+#### 5.2. start prod:
 ```
 yarn install
 yarn build
 yarn start:prod
 ```
 
-### generate new modules:
+## other notes:
+#### generate new modules:
 ```
 nest g res ${module-name} modules
 ```
