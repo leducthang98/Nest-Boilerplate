@@ -1,15 +1,12 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
-import { config } from 'dotenv';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
 import { initSwagger } from './configs/swagger.config';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.modules';
-
-config();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);

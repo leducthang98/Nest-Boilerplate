@@ -252,17 +252,17 @@ module.exports = {
     'arrow-body-style': 'error',
     'arrow-parens': ['error', 'always'],
     'complexity': 'off',
-    // 'no-restricted-imports': [
-    //   'error',
-    //   {
-    //     paths: [
-    //       {
-    //         name: 'rxjs/Rx',
-    //         message: 'Please import directly from \'rxjs\' instead',
-    //       },
-    //     ],
-    //   },
-    // ],
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          {
+            name: 'rxjs/Rx',
+            message: 'Please import directly from \'rxjs\' instead',
+          },
+        ],
+      },
+    ],
     'object-curly-spacing': ['error', 'always'],
     'no-multi-spaces': 'error',
     'no-useless-return': 'error',
