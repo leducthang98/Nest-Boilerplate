@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { Role } from 'src/constants/role.constant';
 import {
@@ -25,11 +25,6 @@ import { RevokeUserResponseDto } from './dto/revoke-user-response.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOkResponse({
-    description: 'return access token and refresh token',
-    type: LoginResponseDto,
-    isArray: false,
-  })
   @Post('login')
   @Public()
   async login(
@@ -38,22 +33,12 @@ export class AuthController {
     return this.authService.login(loginRequestDto);
   }
 
-  @ApiOkResponse({
-    description: 'verify return jwt infomation',
-    type: JwtPayload,
-    isArray: false,
-  })
   @Get('verify')
   @Roles([Role.Admin])
   verify(@JwtDecodedData() data: JwtPayload): JwtPayload {
     return data;
   }
 
-  @ApiOkResponse({
-    description: 'register user, return userId and username',
-    type: RegisterResponseDto,
-    isArray: false,
-  })
   @Post('register')
   @Public()
   async register(
@@ -62,11 +47,6 @@ export class AuthController {
     return this.authService.register(registerRequestDto);
   }
 
-  @ApiOkResponse({
-    description: 'use refresh-token to gain new access-token and refresh-token',
-    type: RefreshTokenResponseDto,
-    isArray: false,
-  })
   @Post('refresh-token')
   @Public()
   refreshToken(
@@ -78,11 +58,6 @@ export class AuthController {
     );
   }
 
-  @ApiOkResponse({
-    description: 'logout, revoke one session',
-    type: LogoutResponseDto,
-    isArray: false,
-  })
   @Post('logout')
   async logout(
     @Req() req: Request,
@@ -95,11 +70,6 @@ export class AuthController {
     };
   }
 
-  @ApiOkResponse({
-    description: 'revoke all sessions of one user',
-    type: RevokeUserResponseDto,
-    isArray: false,
-  })
   @Post('revoke-user')
   @Roles([Role.Root])
   async revokeUser(

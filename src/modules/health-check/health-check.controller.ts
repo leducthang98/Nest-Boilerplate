@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { ApiConfigService } from 'src/shared/services/api-config.service';
 import { HealthCheckService } from './health-check.service';
 import { Public } from 'src/shared/decorators/auth.decorator';
@@ -11,13 +11,8 @@ export class HealthCheckController {
   constructor(
     private readonly healthCheckService: HealthCheckService,
     private readonly configService: ApiConfigService,
-  ) {}
+  ) { }
 
-  @ApiOkResponse({
-    description: 'health check',
-    type: HealthCheckResponseDto,
-    isArray: false,
-  })
   @Get()
   @Public()
   heathCheck(): HealthCheckResponseDto {
