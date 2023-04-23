@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class RevokeUserRequestDto {
   @ApiProperty({
@@ -7,5 +7,6 @@ export class RevokeUserRequestDto {
     example: 'some-uuid',
   })
   @IsNotEmpty()
+  @IsString()
   id: string;
 }
