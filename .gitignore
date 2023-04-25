@@ -38,3 +38,7 @@ lerna-debug.log*
 
 # Migrations
 src/migrations/*.ts
+
+# Docker volumes
+mysql-data
+redis-data
