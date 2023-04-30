@@ -30,10 +30,11 @@ import { SharedModule } from './shared/shared.modules';
     }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
+      name: COMMON_CONSTANT.DATASOURCE.DEFAULT,
       imports: [SharedModule],
       inject: [ApiConfigService],
       useFactory: (configService: ApiConfigService) =>
-        configService.getMysqlConfig(),
+        configService.getMysqlConfig(COMMON_CONSTANT.DATASOURCE.DEFAULT),
     }),
     RedisModule.forRootAsync({
       imports: [SharedModule],
@@ -70,4 +71,4 @@ import { SharedModule } from './shared/shared.modules';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

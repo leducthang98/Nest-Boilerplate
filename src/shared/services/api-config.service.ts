@@ -8,7 +8,7 @@ import { COMMON_CONSTANT } from 'src/constants/common.constant';
 
 @Injectable()
 export class ApiConfigService {
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) { }
 
   getEnv(key: string): string {
     const value = this.configService.get<string>(key);
@@ -20,8 +20,9 @@ export class ApiConfigService {
     return value;
   }
 
-  getMysqlConfig(): TypeOrmModuleOptions {
+  getMysqlConfig(datasourceName: string): TypeOrmModuleOptions {
     const typeOrmConfig = {
+      name: datasourceName,
       type: this.getEnv('DATABASE_TYPE'),
       host: this.getEnv('DATABASE_HOST'),
       port: Number(this.getEnv('DATABASE_PORT')),

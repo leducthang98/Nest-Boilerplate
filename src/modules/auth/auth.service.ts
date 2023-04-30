@@ -24,7 +24,7 @@ export class AuthService {
   private redisInstance: Redis;
 
   constructor(
-    @InjectRepository(UserEntity)
+    @InjectRepository(UserEntity, COMMON_CONSTANT.DATASOURCE.DEFAULT)
     private readonly userRepository: Repository<UserEntity>,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,

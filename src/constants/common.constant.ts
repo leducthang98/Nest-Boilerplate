@@ -16,4 +16,8 @@ export const COMMON_CONSTANT = {
   TIME: {
     DATE_TIME_FORMAT: 'YYYY-MM-DDTHH:mm:ss',
   },
+
+  DATASOURCE: {
+    DEFAULT: 'datasourceDefault'
+  }
 };
