@@ -71,4 +71,4 @@ import { SharedModule } from './shared/shared.modules';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

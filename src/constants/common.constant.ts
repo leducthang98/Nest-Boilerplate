@@ -18,6 +18,6 @@ export const COMMON_CONSTANT = {
   },
 
   DATASOURCE: {
-    DEFAULT: 'datasourceDefault'
-  }
+    DEFAULT: 'datasourceDefault',
+  },
 };
