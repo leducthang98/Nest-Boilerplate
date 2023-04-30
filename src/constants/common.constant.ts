@@ -10,7 +10,7 @@ export const COMMON_CONSTANT = {
 
   THROTTLER: {
     TTL: 60,
-    LIMIT: 100,
+    LIMIT: 5000,
   },
 
   TIME: {
