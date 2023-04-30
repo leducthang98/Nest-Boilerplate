@@ -42,7 +42,7 @@ cp .env.example .env
 
 #### 4. run infrastructure services:
 ```
-docker-compose up db redis -d
+docker-compose up mysql redis -d
 ```
 
 #### 5. prepare migration (please read MIGRATION-GUIDE.md, and then manually perform the migration following the steps outlined in the guide):
