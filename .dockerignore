@@ -1,5 +1,12 @@
 node_modules
+
 dist
 build
+
+logs
+
+mysql-data
+redis-data
+redpanda-data
 
 .env
