@@ -18,5 +18,4 @@ export const dataSource = new DataSource({
   },
 });
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 dataSource.initialize();

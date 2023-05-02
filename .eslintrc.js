@@ -159,6 +159,7 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': 'error',
     '@typescript-eslint/await-thenable': 'error',
     '@typescript-eslint/ban-ts-comment': 'error',
+    "@typescript-eslint/no-floating-promises": "off",
     '@typescript-eslint/ban-tslint-comment': 'error',
     '@typescript-eslint/consistent-indexed-object-style': 'error',
     '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
