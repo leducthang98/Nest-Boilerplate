@@ -2,7 +2,8 @@
 
 ## features:
 - eslint
-- dockerize
+- makefile
+- docker
 - swagger
 - typeorm
 - logger
@@ -45,9 +46,9 @@ cp .env.example .env
 docker-compose up mysql redis -d
 ```
 
-#### 5. prepare migration (please read MIGRATION-GUIDE.md, and then manually perform the migration following the steps outlined in the guide):
+#### 5. migrate database:
 ```
-cat src/migrations/MIGRATION-GUIDE.md
+make sync-db
 ```
 
 #### 6.1. start in the development environment:
