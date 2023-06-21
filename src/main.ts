@@ -33,7 +33,7 @@ async function bootstrap() {
   initSwagger(app, appName);
 
   await app.listen(port, () => {
-    console.info(`🚀 server start at ${port}!`);
+    console.info(`🚀 server starts at ${port}!`);
   });
 }
 
