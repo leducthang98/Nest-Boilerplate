@@ -8,7 +8,7 @@ import type { Redis } from 'ioredis';
 import { CACHE_CONSTANT } from 'src/constants/cache.constant';
 import { COMMON_CONSTANT } from 'src/constants/common.constant';
 import { ERROR } from 'src/constants/exception.constant';
-import type { JwtPayload } from 'src/modules/auth/dto/jwt-payload.dto';
+import type { JwtPayload } from 'src/shared/dto/jwt-payload.dto';
 import { IS_PUBLIC } from 'src/shared/decorators/auth.decorator';
 import { BaseException } from 'src/shared/filters/exception.filter';
 

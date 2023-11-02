@@ -13,7 +13,7 @@ import { BaseException } from 'src/shared/filters/exception.filter';
 import { ApiConfigService } from 'src/shared/services/api-config.service';
 import { Repository } from 'typeorm';
 
-import type { JwtPayload } from './dto/jwt-payload.dto';
+import type { JwtPayload } from '../../shared/dto/jwt-payload.dto';
 import type { LoginRequestDto } from './dto/login-request.dto';
 import type { LoginResponseDto } from './dto/login-response.dto';
 import type { RegisterRequestDto } from './dto/register-request.dto';

@@ -9,7 +9,7 @@ import {
 } from 'src/shared/decorators/auth.decorator';
 
 import { AuthService } from './auth.service';
-import { JwtPayload } from './dto/jwt-payload.dto';
+import { JwtPayload } from '../../shared/dto/jwt-payload.dto';
 import { LoginRequestDto } from './dto/login-request.dto';
 import type { LoginResponseDto } from './dto/login-response.dto';
 import type { LogoutResponseDto } from './dto/logout-response.dto';
