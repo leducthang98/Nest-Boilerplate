@@ -1,4 +1,4 @@
-# nest boilerplate
+# nest-boilerplate
 
 ## features:
 - eslint
